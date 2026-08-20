@@ -533,11 +533,27 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
   .toast-stack { left: 16px; right: 16px; bottom: 16px; max-width: none; }
   .form-foot .btn { width: 100%; }
   .note-demo { max-width: none; }
+  /* evita zoom automático do iOS ao focar campos */
+  .input { font-size: 16px; }
+  /* modal de sucesso: ações empilhadas em tela pequena */
+  .modal-actions { flex-direction: column; align-items: stretch; }
+  .modal-actions .btn { width: 100%; }
+  /* painel do acompanhamento: cabeçalho quebra sem vazar */
+  .result-head { flex-wrap: wrap; padding: 18px 20px 0; }
+  .result-meta > div { padding: 12px 18px; }
+  .timeline { padding: 22px 20px 4px; }
   /* ticker mobile */
   .ticker { height: 38px; }
   .ticker-label { padding: 0 12px; gap: 0; }
   .ticker-label-text { display: none; }
   .ticker-item { margin-right: 32px; font-size: 12.5px; gap: 8px; }
+}
+
+/* somente telas bem pequenas (320–480px) */
+@media (max-width: 480px) {
+  .fc-ticket { padding: 13px 14px; }
+  .fc-protocol { font-size: 15px; }
+  .ticker-viewport::before, .ticker-viewport::after { width: 26px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
