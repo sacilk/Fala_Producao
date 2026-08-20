@@ -49,18 +49,24 @@
           <p class="eyebrow reveal"><span class="eyebrow-dot"></span>Canal interno · Área produtiva</p>
           <h1 class="hero-title reveal" style="--d:.08s">Fale.<br><span class="hero-em">Nós ouvimos.</span></h1>
           <p class="hero-lead reveal" style="--d:.16s">
-            Um espaço simples e seguro para você registrar problemas, sugestões,
-            riscos de segurança e reconhecimentos da produção. Sem burocracia,
-            com protocolo para acompanhar e retorno com prazo.
+            Registre problemas, sugestões, riscos e reconhecimentos da produção.
+            Acompanhe seu protocolo e receba o retorno da equipe responsável.
           </p>
           <div class="hero-actions reveal" style="--d:.24s">
-            <a href="pages/enviar.html" class="btn btn-primary">
-              Quero falar
+            <a href="pages/enviar.html" class="btn btn-primary btn-hero">
+              Registrar manifestação
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
             <a href="pages/acompanhar.html" class="btn btn-secondary">Acompanhar protocolo</a>
           </div>
-          <div class="hero-stats reveal" style="--d:.32s">
+          <div class="anon-pill reveal" style="--d:.3s">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3M12 14.5v2.5"/></svg>
+            <span>
+              <strong>Você decide se quer se identificar.</strong>
+              <small>Anonimato opcional em toda manifestação.</small>
+            </span>
+          </div>
+          <div class="hero-stats reveal" style="--d:.36s">
             <div><strong>184</strong><span>protocolos registrados</span></div>
             <div><strong>48h</strong><span>prazo médio de retorno</span></div>
             <div><strong>100%</strong><span>com acompanhamento</span></div>
@@ -80,9 +86,16 @@
               <span class="fc-protocol">FALA #000184</span>
               <span class="badge badge-tratamento">Em tratamento</span>
             </div>
-            <div class="fc-meta">Setor FEED · Equipamento</div>
-            <div class="fc-bar"><span style="width:66%"></span></div>
-            <div class="fc-foot"><span class="fc-dot"></span>Atualizado há 2 h</div>
+            <div class="fc-meta">Setor: FEED · Equipamento</div>
+            <div class="fc-bar"><span style="width:80%"></span></div>
+            <div class="fc-foot">
+              <span class="fc-dot"></span>Atualizado há 2h
+              <span class="fc-pct">80%</span>
+            </div>
+            <div class="fc-update">
+              <small>Última atualização</small>
+              <p>“Equipe responsável acionada.”</p>
+            </div>
           </div>
 
           <div class="float-card fc-chip">
@@ -95,28 +108,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ======================= TICKER DE NOTÍCIAS ======================= -->
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-label">
-        <span class="ticker-label-dot"></span>
-        <span class="ticker-label-text">Em tempo real</span>
-      </div>
-      <div class="ticker-viewport">
-        <div class="ticker-track" id="ticker-track">
-          <div class="ticker-group">
-            <span class="ticker-item"><span class="ticker-dot"></span>FALA <strong>#000184</strong> · Em tratamento</span>
-            <span class="ticker-item"><span class="ticker-dot"></span>FALA <strong>#000181</strong> · Resolvido</span>
-            <span class="ticker-item"><span class="ticker-dot"></span>FALA <strong>#000183</strong> · Em análise</span>
-            <span class="ticker-item"><span class="ticker-dot"></span>FALA <strong>#000178</strong> · Resolvido</span>
-            <span class="ticker-item"><span class="ticker-dot"></span>FALA <strong>#000179</strong> · Em tratamento</span>
-            <span class="ticker-item"><span class="ticker-dot"></span>FALA <strong>#000172</strong> · Resolvido</span>
-            <span class="ticker-item"><span class="ticker-dot"></span>FALA <strong>#000176</strong> · Em tratamento</span>
-            <span class="ticker-item"><span class="ticker-dot"></span>FALA <strong>#000169</strong> · Resolvido</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- ======================= COMO PODEMOS AJUDAR ======================= -->
     <section class="section">
@@ -132,7 +123,7 @@
             </span>
             <div>
               <h3>Problemas</h3>
-              <p>Equipamento parado, material errado, processo travado: registre e acompanhe até a solução.</p>
+              <p>Máquina parada, material errado, processo travado.</p>
             </div>
           </div>
           <div class="help-card reveal" style="--d:.08s">
@@ -141,7 +132,7 @@
             </span>
             <div>
               <h3>Sugestões</h3>
-              <p>Sua ideia de melhoria pode virar padrão para toda a fábrica. Conte como faria diferente.</p>
+              <p>Ideias para melhorar o processo.</p>
             </div>
           </div>
           <div class="help-card reveal" style="--d:.16s">
@@ -150,7 +141,7 @@
             </span>
             <div>
               <h3>Segurança</h3>
-              <p>Risco identificado é prioridade máxima. Relate condições ou atos inseguros imediatamente.</p>
+              <p>Risco ou condição insegura.</p>
             </div>
           </div>
           <div class="help-card reveal" style="--d:.24s">
@@ -159,7 +150,7 @@
             </span>
             <div>
               <h3>Reconhecimento</h3>
-              <p>Destaque colegas e equipes que fizeram a diferença. Reconhecer também é cuidar da produção.</p>
+              <p>Reconhecer uma boa atitude ou trabalho.</p>
             </div>
           </div>
         </div>

@@ -308,46 +308,65 @@
         <section class="g-view" id="view-usuarios">
           <div class="g-page-head">
             <h1>Usuários</h1>
-            <p>Contas com acesso à Central de Gestão (demonstração — em produção, gerencie via Supabase).</p>
+            <p>Cadastre os e-mails de quem pode acessar e visualizar o canal de escuta.</p>
           </div>
+
+          <div class="g-panel g-user-form-panel">
+            <div class="g-panel-head"><h3 id="usuarios-form-titulo">Adicionar usuário</h3></div>
+            <form id="form-usuario" novalidate>
+              <div class="g-user-form-grid">
+                <div class="field">
+                  <label for="u-nome">Nome</label>
+                  <input type="text" class="input" id="u-nome" placeholder="Nome completo">
+                  <span class="field-error" role="alert"></span>
+                </div>
+                <div class="field">
+                  <label for="u-email">E-mail</label>
+                  <input type="email" class="input" id="u-email" placeholder="nome@empresa.com">
+                  <span class="field-error" role="alert"></span>
+                </div>
+                <div class="field">
+                  <label for="u-perfil">Perfil</label>
+                  <select class="input" id="u-perfil">
+                    <option value="Gestão">Gestão</option>
+                    <option value="Admin">Admin</option>
+                    <option value="RH">RH</option>
+                    <option value="Segurança">Segurança</option>
+                    <option value="Visualização">Visualização</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field" style="margin-top:14px">
+                <label>Permissões</label>
+                <div class="perm-group">
+                  <label class="perm-chip"><input type="checkbox" id="u-perm-acessar" checked><span>Acessar a gestão</span></label>
+                  <label class="perm-chip"><input type="checkbox" id="u-perm-ver" checked><span>Ver manifestações</span></label>
+                </div>
+                <span class="field-error" role="alert" id="u-perm-erro"></span>
+              </div>
+              <div class="g-form-actions">
+                <button type="submit" class="btn btn-primary g-btn-sm" id="u-submit">
+                  <span class="spinner" aria-hidden="true"></span>
+                  <span class="btn-label">Cadastrar usuário</span>
+                </button>
+                <button type="button" class="btn btn-ghost g-btn-sm" id="u-cancelar" hidden>Cancelar edição</button>
+              </div>
+            </form>
+          </div>
+
           <div class="g-table-wrap">
             <div class="g-table-scroll">
               <table class="g-table g-table-users">
                 <thead>
-                  <tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Status</th><th class="g-th-acoes">Ações</th></tr>
+                  <tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Permissões</th><th class="g-th-acoes">Ações</th></tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td data-label="Nome"><strong>Administrador</strong></td>
-                    <td data-label="E-mail">admin@empresa.com</td>
-                    <td data-label="Perfil"><span class="gb gb-tratamento">Admin</span></td>
-                    <td data-label="Status"><span class="gb gb-resolvido">Ativo</span></td>
-                    <td data-label="Ações" style="text-align:right"><button type="button" class="g-btn-acao g-user-demo" data-nome="Administrador">Editar</button></td>
-                  </tr>
-                  <tr>
-                    <td data-label="Nome"><strong>Marina Costa</strong></td>
-                    <td data-label="E-mail">gestao@empresa.com</td>
-                    <td data-label="Perfil"><span class="gb gb-analise">Gestão</span></td>
-                    <td data-label="Status"><span class="gb gb-resolvido">Ativo</span></td>
-                    <td data-label="Ações" style="text-align:right"><button type="button" class="g-btn-acao g-user-demo" data-nome="Marina Costa">Editar</button></td>
-                  </tr>
-                  <tr>
-                    <td data-label="Nome"><strong>Paulo Ribeiro</strong></td>
-                    <td data-label="E-mail">rh@empresa.com</td>
-                    <td data-label="Perfil"><span class="gb gb-recebido">RH</span></td>
-                    <td data-label="Status"><span class="gb gb-resolvido">Ativo</span></td>
-                    <td data-label="Ações" style="text-align:right"><button type="button" class="g-btn-acao g-user-demo" data-nome="Paulo Ribeiro">Editar</button></td>
-                  </tr>
-                  <tr>
-                    <td data-label="Nome"><strong>Renata Farias</strong></td>
-                    <td data-label="E-mail">seguranca@empresa.com</td>
-                    <td data-label="Perfil"><span class="gb gb-encerrado">Segurança</span></td>
-                    <td data-label="Status"><span class="gb gb-recebido">Convidado</span></td>
-                    <td data-label="Ações" style="text-align:right"><button type="button" class="g-btn-acao g-user-demo" data-nome="Renata Farias">Editar</button></td>
-                  </tr>
-                </tbody>
+                <tbody id="tabela-usuarios"></tbody>
               </table>
             </div>
+          </div>
+          <div class="g-table-foot">
+            <span class="g-muted" id="usuarios-contagem"></span>
+            <span class="g-muted">Em produção: Supabase Auth + tabela profiles com RLS.</span>
           </div>
         </section>
 

@@ -237,29 +237,6 @@
   }
 
   /* ------------------------------------------------------------
-     Ticker de notícias (home)
-     Duplica o grupo de protocolos: o 2º grupo é cópia do 1º,
-     permitindo o loop contínuo via animação CSS (translateX -50%).
-  ------------------------------------------------------------ */
-  function initTicker() {
-    var track = $("#ticker-track");
-    if (!track) { return; }
-    if (track.querySelector(".ticker-group-clone")) { return; }
-
-    var grupo = track.querySelector(".ticker-group");
-    if (!grupo) { return; }
-
-    var reduzido = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    var clone = grupo.cloneNode(true);
-    clone.classList.add("ticker-group-clone");
-    clone.setAttribute("aria-hidden", "true");
-    track.appendChild(clone);
-
-    if (reduzido) { track.style.animation = "none"; }
-  }
-
-  /* ------------------------------------------------------------
      HOME: cards de categoria redirecionam com query string
   ------------------------------------------------------------ */
   function initHome() {
@@ -823,7 +800,6 @@
     initModais();
     initMenuMobile();
     initReveal();
-    initTicker();
 
     var pagina = document.body ? document.body.getAttribute("data-page") : "";
     if (pagina === "home") { initHome(); }

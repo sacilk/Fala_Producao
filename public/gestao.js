@@ -508,6 +508,178 @@
     renderTabela();
   }
 
+  /* ============================================================
+     USUÁRIOS — cadastro de quem pode acessar e ver o canal
+     Demonstração: persistido em localStorage (fp-users).
+     INTEGRAÇÃO: supabase.auth.admin.createUser + profiles (RLS).
+  ------------------------------------------------------------ */
+  var USUARIOS_SEED = [
+    { id: "u-admin", nome: "Administrador", email: "admin@empresa.com", perfil: "Admin", acessar: true, ver: true, fixo: true },
+    { id: "u-gestao", nome: "Marina Costa", email: "gestao@empresa.com", perfil: "Gestão", acessar: true, ver: true },
+    { id: "u-rh", nome: "Paulo Ribeiro", email: "rh@empresa.com", perfil: "RH", acessar: true, ver: true },
+    { id: "u-seg", nome: "Renata Farias", email: "seguranca@empresa.com", perfil: "Segurança", acessar: false, ver: true }
+  ];
+
+  function initUsuarios() {
+    var tbody = $("#tabela-usuarios");
+    var form = $("#form-usuario");
+    if (!tbody || !form) { return; }
+
+    var usuarios = store.get("fp-users", null);
+    if (!Array.isArray(usuarios)) {
+      usuarios = USUARIOS_SEED.slice();
+      store.set("fp-users", usuarios);
+    }
+
+    var editandoId = null;
+    var fNome = $("#u-nome");
+    var fEmail = $("#u-email");
+    var fPerfil = $("#u-perfil");
+    var pAcessar = $("#u-perm-acessar");
+    var pVer = $("#u-perm-ver");
+    var permErro = $("#u-perm-erro");
+    var titulo = $("#usuarios-form-titulo");
+    var btnSubmit = $("#u-submit");
+    var btnCancel = $("#u-cancelar");
+    var contagem = $("#usuarios-contagem");
+    var REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    var PERFIL_BADGE = {
+      "Admin": "gb-tratamento",
+      "Gestão": "gb-analise",
+      "RH": "gb-recebido",
+      "Segurança": "gb-encerrado",
+      "Visualização": "gb-recebido"
+    };
+
+    function render() {
+      tbody.innerHTML = usuarios.map(function (u) {
+        var perms = "";
+        if (u.acessar) { perms += "<i>Acessar</i>"; }
+        if (u.ver) { perms += '<i class="perm-ver">Ver</i>'; }
+        if (!perms) { perms = '<span class="g-muted">—</span>'; }
+        return "<tr>" +
+          '<td data-label="Nome"><strong>' + esc(u.nome) + "</strong></td>" +
+          '<td data-label="E-mail">' + esc(u.email) + "</td>" +
+          '<td data-label="Perfil"><span class="gb ' + (PERFIL_BADGE[u.perfil] || "gb-recebido") + '">' + esc(u.perfil) + "</span></td>" +
+          '<td data-label="Permissões"><span class="perm-mini">' + perms + "</span></td>" +
+          '<td data-label="Ações" style="text-align:right;white-space:nowrap">' +
+          '<button type="button" class="g-btn-acao u-editar" data-id="' + esc(u.id) + '">Editar</button> ' +
+          '<button type="button" class="g-btn-acao u-remover" data-id="' + esc(u.id) + '">Remover</button>' +
+          "</td></tr>";
+      }).join("");
+      if (contagem) {
+        var comAcesso = usuarios.filter(function (u) { return u.acessar; }).length;
+        contagem.textContent = usuarios.length + " cadastrado(s) · " + comAcesso + " com acesso à gestão";
+      }
+    }
+
+    function resetForm() {
+      editandoId = null;
+      form.reset();
+      if (pAcessar) { pAcessar.checked = true; }
+      if (pVer) { pVer.checked = true; }
+      if (permErro) { permErro.textContent = ""; }
+      if (titulo) { titulo.textContent = "Adicionar usuário"; }
+      if (btnSubmit) { btnSubmit.querySelector(".btn-label").textContent = "Cadastrar usuário"; }
+      if (btnCancel) { btnCancel.hidden = true; }
+      [fNome, fEmail].forEach(function (el) { if (el) { window.FP.clearInvalid(el); } });
+    }
+
+    function modoEdicao(u) {
+      editandoId = u.id;
+      if (fNome) { fNome.value = u.nome; window.FP.clearInvalid(fNome); }
+      if (fEmail) { fEmail.value = u.email; window.FP.clearInvalid(fEmail); }
+      if (fPerfil) { fPerfil.value = u.perfil; }
+      if (pAcessar) { pAcessar.checked = !!u.acessar; }
+      if (pVer) { pVer.checked = !!u.ver; }
+      if (permErro) { permErro.textContent = ""; }
+      if (titulo) { titulo.textContent = "Editar usuário"; }
+      if (btnSubmit) { btnSubmit.querySelector(".btn-label").textContent = "Salvar alterações"; }
+      if (btnCancel) { btnCancel.hidden = false; }
+      if (fNome) { fNome.focus(); }
+    }
+
+    tbody.addEventListener("click", function (event) {
+      var btn = event.target.closest("button[data-id]");
+      if (!btn) { return; }
+      var id = btn.getAttribute("data-id");
+      var alvo = usuarios.filter(function (x) { return x.id === id; })[0];
+      if (!alvo) { return; }
+
+      if (btn.classList.contains("u-editar")) {
+        modoEdicao(alvo);
+        return;
+      }
+      if (btn.classList.contains("u-remover")) {
+        if (alvo.fixo) {
+          toast("O administrador principal não pode ser removido.", "erro");
+          return;
+        }
+        usuarios = usuarios.filter(function (x) { return x.id !== id; });
+        store.set("fp-users", usuarios);
+        if (editandoId === id) { resetForm(); }
+        render();
+        toast("Acesso removido: " + alvo.nome + ".", "info");
+      }
+    });
+
+    if (btnCancel) { btnCancel.addEventListener("click", resetForm); }
+    [fNome, fEmail].forEach(function (el) {
+      if (el) { el.addEventListener("input", function () { window.FP.clearInvalid(el); }); }
+    });
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var nome = fNome ? fNome.value.trim() : "";
+      var email = fEmail ? fEmail.value.trim().toLowerCase() : "";
+      var valido = true;
+
+      if (nome.length < 2) { window.FP.setInvalid(fNome, "Informe o nome."); valido = false; }
+      if (!REGEX_EMAIL.test(email)) { window.FP.setInvalid(fEmail, "Informe um e-mail válido."); valido = false; }
+      if (!pAcessar.checked && !pVer.checked) {
+        if (permErro) { permErro.textContent = "Selecione ao menos uma permissão."; }
+        valido = false;
+      } else if (permErro) {
+        permErro.textContent = "";
+      }
+
+      var duplicado = usuarios.filter(function (x) { return x.email === email && x.id !== editandoId; })[0];
+      if (duplicado) {
+        window.FP.setInvalid(fEmail, "Este e-mail já está cadastrado.");
+        valido = false;
+      }
+      if (!valido) { toast("Revise os campos destacados.", "erro"); return; }
+
+      if (btnSubmit) { window.FP.setLoading(btnSubmit, true); }
+      window.setTimeout(function () {
+        if (editandoId) {
+          usuarios = usuarios.map(function (x) {
+            if (x.id !== editandoId) { return x; }
+            return { id: x.id, nome: nome, email: email, perfil: fPerfil.value, acessar: pAcessar.checked, ver: pVer.checked, fixo: x.fixo };
+          });
+          toast("Usuário atualizado: " + nome + ".", "ok");
+        } else {
+          usuarios.push({
+            id: "u-" + Date.now().toString(36),
+            nome: nome,
+            email: email,
+            perfil: fPerfil.value,
+            acessar: pAcessar.checked,
+            ver: pVer.checked
+          });
+          toast("Acesso cadastrado para " + email + ".", "ok");
+        }
+        store.set("fp-users", usuarios);
+        if (btnSubmit) { window.FP.setLoading(btnSubmit, false); }
+        resetForm();
+        render();
+      }, 450);
+    });
+
+    render();
+  }
+
   function initGestao() {
     /* usuário logado */
     var user = session.get("fp-user", {});
@@ -672,12 +844,8 @@
       });
     }
 
-    /* usuários (demo) */
-    $$(".g-user-demo").forEach(function (b) {
-      b.addEventListener("click", function () {
-        toast("Edição de " + (b.getAttribute("data-nome") || "usuário") + " disponível na integração com Supabase (demo).", "info");
-      });
-    });
+    /* usuários — cadastro de e-mails com acesso/visualização */
+    initUsuarios();
 
     /* configurações — alterar senha */
     var formSenha = $("#form-senha");
