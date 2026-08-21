@@ -142,11 +142,7 @@ fieldset { border: 0; }
 }
 .hero-lead { font-size: 17.5px; color: var(--ink-2); max-width: 520px; margin-bottom: 30px; }
 .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-.hero-stats { display: flex; gap: 34px; margin-top: 44px; flex-wrap: wrap; }
-.hero-stats > div { display: flex; flex-direction: column; }
-.hero-stats strong { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -.02em; color: var(--brand-deep); }
-.hero-stats span { font-size: 13px; color: var(--ink-3); }
-.hero-stats > div + div { border-left: 1.5px solid var(--line); padding-left: 34px; }
+
 
 .hero-panel {
   position: relative; min-height: 440px; border-radius: 30px; overflow: hidden;
@@ -199,13 +195,6 @@ fieldset { border: 0; }
 .anon-pill > svg { flex-shrink: 0; color: var(--ok); }
 .anon-pill strong { display: block; font-size: 14px; color: var(--ink); }
 .anon-pill small { font-size: 12.5px; color: var(--ink-3); }
-
-/* estatísticas com acento de marca */
-.hero-stats > div { position: relative; padding-top: 12px; }
-.hero-stats > div::before {
-  content: ""; position: absolute; top: 0; left: 0; width: 28px; height: 3px; border-radius: 3px;
-  background: linear-gradient(90deg, var(--brand), var(--amber));
-}
 
 /* última atualização dentro do card laranja */
 .fc-pct { margin-left: auto; font-weight: 800; font-size: 12.5px; color: var(--brand-dark); font-variant-numeric: tabular-nums; }
@@ -289,6 +278,8 @@ fieldset { border: 0; }
 .footer-grid a:hover { color: var(--amber); }
 .footer-about { font-size: 14px; color: #A9977F; margin-top: 14px; max-width: 34ch; }
 .footer-bottom { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 18px 0; border-top: 1px solid rgba(255, 255, 255, .1); font-size: 12.5px; color: #8F7D67; }
+.footer-download { display: inline-flex; align-items: center; gap: 7px; color: #C4B09A; font-weight: 600; text-decoration: none; transition: color .18s ease; }
+.footer-download:hover { color: var(--amber); }
 
 /* ---------------- páginas internas ---------------- */
 .page-hero { padding: 48px 0 34px; border-bottom: 1.5px solid var(--line); background: linear-gradient(180deg, var(--brand-softer), var(--bg)); }
@@ -508,8 +499,6 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
   .section { padding: 54px 0; }
   .hero { padding: 44px 0 60px; }
   .hero-actions .btn { width: 100%; }
-  .hero-stats { gap: 20px; }
-  .hero-stats > div + div { padding-left: 20px; }
   .hero-panel { min-height: 320px; }
   .fc-ticket { top: 34px; left: 10px; width: min(280px, calc(100% - 20px)); }
   .fc-chip { bottom: 34px; right: 10px; max-width: calc(100% - 20px); padding: 12px 14px; }
@@ -640,7 +629,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .g-page-head p { color: var(--ink-2); font-size: 15px; margin-top: 6px; max-width: 66ch; }
 
 /* dashboard */
-.g-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 20px; }
+.g-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
 .g-stat {
   background: var(--card); border: 1.5px solid var(--line); border-radius: 18px;
   padding: 17px 18px 15px; display: flex; flex-direction: column; position: relative; overflow: hidden;
@@ -668,10 +657,6 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .g-stat-total::after { background: var(--brand); }
 .g-stat-total .g-stat-label { color: #D8C9B8; }
 .g-stat-total .g-stat-num { color: var(--amber); }
-.g-stat-prazo { background: var(--brand-softer); border-color: var(--brand-soft); }
-.g-stat-prazo::after { background: var(--brand); }
-.g-stat-prazo .g-stat-num { color: var(--brand-deep); }
-.g-stat-prazo .g-stat-hint { color: var(--brand-deep); opacity: .7; }
 
 .g-dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 .g-panel { background: var(--card); border: 1.5px solid var(--line); border-radius: 20px; padding: 20px 22px; box-shadow: var(--shadow-sm); }

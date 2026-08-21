@@ -531,7 +531,6 @@
 
     function montarResultado(protocolo) {
       var registro = buscarRegistro(protocolo);
-      var simulado = !registro;
       var categoria = registro ? (registro.categoriaLabel || CAT_LABELS[registro.categoria] || "Outro") : null;
       var setor = registro ? registro.setorLabel || SETOR_LABELS[registro.setor] || "Prefiro não informar" : null;
       var autor = registro ? (registro.anonimo ? "Anônimo" : registro.nome || "Colaborador identificado") : null;
@@ -586,9 +585,6 @@
         html += "</div></div>";
       });
       html += "</div>";
-      if (simulado) {
-        html += "<p class=\"note-demo\" style=\"padding:0 28px 26px 34px;\"><svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 8v.5M12 11.5V16\"/></svg> Linha do tempo simulada para demonstração — ainda sem backend conectado.</p>";
-      }
       return html;
     }
 
