@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baixar projeto — Fala Produção</title>
+  <link rel="icon" href="image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23F26419'/%3E%3Cpath d='M14 22a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v14a8 8 0 0 1-8 8H30l-9 9v-9h-1a8 8 0 0 1-8-8z' fill='%23FFF4EA'/%3E%3Ccircle cx='32' cy='29' r='6' fill='%23F26419'/%3E%3Ccircle cx='32' cy='29' r='2.2' fill='%23FFF4EA'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .dl-shell { min-height: calc(100vh - 200px); display: flex; align-items: flex-start; justify-content: center; padding: 44px 0 70px; }
+    .dl-card {
+      width: min(680px, 100%); background: var(--card); border: 1.5px solid var(--line);
+      border-radius: 28px; box-shadow: var(--shadow-lg); overflow: hidden;
+    }
+    .dl-head {
+      background: linear-gradient(135deg, #2B1E12 0%, #3B2817 60%, #54351A 100%);
+      padding: 30px 34px; color: #F5EDE2; position: relative; overflow: hidden;
+    }
+    .dl-head::after {
+      content: ""; position: absolute; right: -40px; bottom: -70px; width: 190px; height: 190px;
+      border-radius: 50%; border: 24px solid rgba(242, 100, 25, .22);
+    }
+    .dl-head h1 { font-size: 26px; font-weight: 800; letter-spacing: -.02em; margin: 4px 0 6px; }
+    .dl-head p { font-size: 14px; color: #C4B09A; max-width: 52ch; }
+    .dl-body { padding: 26px 34px 34px; }
+    .dl-list { display: flex; flex-direction: column; border: 1.5px solid var(--line); border-radius: 18px; overflow: hidden; }
+    .dl-file {
+      display: flex; align-items: center; gap: 12px; padding: 11px 16px;
+      font-size: 13.5px; font-weight: 500; color: var(--ink-2);
+      border-bottom: 1px solid var(--line-2); background: var(--card);
+      transition: background .18s ease;
+    }
+    .dl-file:last-child { border-bottom: 0; }
+    .dl-file:hover { background: var(--brand-softer); }
+    .dl-file-name { font-family: var(--font-display); font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+    .dl-file-size { margin-left: auto; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .dl-file-ok { color: var(--ok); font-weight: 800; }
+    .dl-file-erro { color: var(--danger); font-weight: 800; }
+    .dl-file-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex-shrink: 0; transition: background .2s ease; }
+    .dl-file.buscando .dl-file-dot { background: var(--amber); animation: pulse-dot 1.2s ease-out infinite; }
+    .dl-file.ok .dl-file-dot { background: var(--ok); }
+    .dl-file.erro .dl-file-dot { background: var(--danger); }
+    .dl-total {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      margin: 14px 0 22px; font-size: 13px; color: var(--ink-3);
+    }
+    .dl-total strong { color: var(--brand-deep); font-family: var(--font-display); font-size: 15px; font-variant-numeric: tabular-nums; }
+    .dl-status {
+      margin-top: 16px; font-size: 13.5px; font-weight: 600; min-height: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dl-status.ok { color: var(--ok); }
+    .dl-status.erro { color: var(--danger); }
+    .dl-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .dl-note { margin-top: 18px; font-size: 12.5px; color: var(--ink-3); max-width: 60ch; }
+    @media (max-width: 640px) {
+      .dl-head, .dl-body { padding-left: 22px; padding-right: 22px; }
+      .dl-actions .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body data-page="download">
+
+  <!-- ======================= HEADER ======================= -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/logo.svg" alt="Logo Fala Produção" class="brand-logo">
+        <span class="brand-text">
+          <span class="brand-name">Fala Produção</span>
+          <span class="brand-sub">Canal de escuta</span>
+        </span>
+      </a>
+      <nav class="nav-desktop" aria-label="Navegação principal">
+        <a href="index.html">Início</a>
+        <a href="pages/enviar.html">Enviar manifestação</a>
+        <a href="pages/acompanhar.html">Acompanhar protocolo</a>
+        <a href="pages/login.html">Área de gestão</a>
+      </nav>
+      <button class="hamburger" id="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="nav-mobile" id="nav-mobile" aria-label="Menu mobile">
+      <a href="index.html">Início</a>
+      <a href="pages/enviar.html">Enviar manifestação</a>
+      <a href="pages/acompanhar.html">Acompanhar protocolo</a>
+      <a href="pages/login.html">Área de gestão</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="dl-shell">
+      <div class="container" style="display:flex;justify-content:center">
+        <div class="dl-card reveal in">
+          <div class="dl-head">
+            <span class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span>Download</span>
+            <h1>Baixar o projeto completo</h1>
+            <p>Empacota todos os arquivos do Fala Produção em um único <strong style="color:#FFB627">fala-producao.zip</strong>, gerado direto no seu navegador.</p>
+          </div>
+          <div class="dl-body">
+            <div class="dl-list" id="dl-list"></div>
+            <div class="dl-total">
+              <span id="dl-total-label">11 arquivos no pacote</span>
+              <span>Tamanho total: <strong id="dl-total-size">—</strong></span>
+            </div>
+            <div class="dl-actions">
+              <button type="button" class="btn btn-primary" id="btn-baixar">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="btn-label">Gerar e baixar .zip</span>
+              </button>
+              <a href="index.html" class="btn btn-secondary">← Voltar ao canal</a>
+            </div>
+            <p class="dl-status" id="dl-status" role="status"></p>
+            <p class="dl-note">
+              Nenhum dado é enviado a servidor: a leitura dos arquivos e a criação do .zip
+              acontecem localmente. Se o download não iniciar, sirva esta página por HTTP
+              (ex.: <code>npm run dev</code> ou qualquer servidor estático).
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand brand-light" href="index.html">
+          <img src="assets/logo.svg" alt="Logo Fala Produção" class="brand-logo">
+          <span class="brand-text">
+            <span class="brand-name">Fala Produção</span>
+            <span class="brand-sub">Canal de escuta</span>
+          </span>
+        </a>
+        <p class="footer-about">Espaço interno para a área produtiva falar — e ser ouvida de verdade.</p>
+      </div>
+      <div>
+        <h4>Canal</h4>
+        <a href="pages/enviar.html">Enviar manifestação</a>
+        <a href="pages/acompanhar.html">Acompanhar protocolo</a>
+      </div>
+      <div>
+        <h4>Gestão</h4>
+        <a href="pages/login.html">Área de gestão</a>
+        <a href="pages/login.html">Acesso da gestão</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <span>© 2026 Fala Produção · Uso interno</span>
+      <a class="footer-download" href="download.html">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+        Baixar projeto (.zip)
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    /* ============================================================
+       GERADOR DE ZIP (sem bibliotecas)
+       Formato ZIP com entradas STORE + CRC32, montado em memória.
+    ------------------------------------------------------------ */
+    var ARQUIVOS_PROJETO = [
+      "index.html",
+      "style.css",
+      "script.js",
+      "gestao.js",
+      "download.html",
+      "pages/enviar.html",
+      "pages/acompanhar.html",
+      "pages/login.html",
+      "pages/gestao.html",
+      "pages/admin.html",
+      "assets/logo.svg"
+    ];
+
+    var LEIA_ME = [
+      "FALA PRODUCAO - Canal de escuta",
+      "================================",
+      "",
+      "COMO USAR",
+      "1) Abra index.html no navegador (ou sirva a pasta com qualquer",
+      "   servidor estatico, ex.: npm run dev / python -m http.server).",
+      "",
+      "ACESSO DA GESTAO",
+      "- Menu 'Area de gestao' > login",
+      "- Usuario: adm123",
+      "- Senha:   123456789",
+      "- A senha pode ser alterada em Central de Gestao > Configuracoes.",
+      "- O administrador cadastra e-mails autorizados em 'Usuarios'.",
+      "",
+      "INTEGRACAO COM BACKEND",
+      "- Os pontos de integracao estao marcados no codigo com o",
+      "  comentario 'INTEGRACAO' (Supabase Auth, tabelas e RLS).",
+      "",
+      "ESTRUTURA",
+      "index.html            Pagina inicial do canal",
+      "style.css             Design system completo",
+      "script.js             Logica do canal publico",
+      "gestao.js             Logica da Central de Gestao",
+      "pages/                Enviar, acompanhar, login, gestao, admin",
+      "assets/logo.svg       Logo do canal"
+    ].join("\n");
+
+    function crc32(bytes) {
+      var table = crc32.table;
+      if (!table) {
+        table = crc32.table = [];
+        for (var n = 0; n < 256; n++) {
+          var c = n;
+          for (var k = 0; k < 8; k++) { c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); }
+          table[n] = c >>> 0;
+        }
+      }
+      var crc = 0xFFFFFFFF;
+      for (var i = 0; i < bytes.length; i++) { crc = (crc >>> 8) ^ table[(crc ^ bytes[i]) & 0xFF]; }
+      return (crc ^ 0xFFFFFFFF) >>> 0;
+    }
+
+    function buildZip(entries) {
+      var enc = new TextEncoder();
+      var parts = [];
+      var central = [];
+      var offset = 0;
+
+      entries.forEach(function (entry) {
+        var nameBytes = enc.encode(entry.name);
+        var data = entry.data;
+        var crc = crc32(data);
+
+        var local = new Uint8Array(30 + nameBytes.length);
+        var lv = new DataView(local.buffer);
+        lv.setUint32(0, 0x04034b50, true);
+        lv.setUint16(4, 20, true);
+        lv.setUint16(6, 0x0800, true);
+        lv.setUint16(8, 0, true);
+        lv.setUint16(10, 0, true);
+        lv.setUint16(12, 33, true);
+        lv.setUint32(14, crc, true);
+        lv.setUint32(18, data.length, true);
+        lv.setUint32(22, data.length, true);
+        lv.setUint16(26, nameBytes.length, true);
+        lv.setUint16(28, 0, true);
+        local.set(nameBytes, 30);
+        parts.push(local);
+        parts.push(data);
+
+        var cen = new Uint8Array(46 + nameBytes.length);
+        var cv = new DataView(cen.buffer);
+        cv.setUint32(0, 0x02014b50, true);
+        cv.setUint16(4, 20, true);
+        cv.setUint16(6, 20, true);
+        cv.setUint16(8, 0x0800, true);
+        cv.setUint16(10, 0, true);
+        cv.setUint16(12, 0, true);
+        cv.setUint16(14, 33, true);
+        cv.setUint32(16, crc, true);
+        cv.setUint32(20, data.length, true);
+        cv.setUint32(24, data.length, true);
+        cv.setUint16(28, nameBytes.length, true);
+        cv.setUint16(30, 0, true);
+        cv.setUint16(32, 0, true);
+        cv.setUint16(34, 0, true);
+        cv.setUint16(36, 0, true);
+        cv.setUint32(38, 0, true);
+        cv.setUint32(42, offset, true);
+        cen.set(nameBytes, 46);
+        central.push(cen);
+
+        offset += local.length + data.length;
+      });
+
+      var centralSize = 0;
+      central.forEach(function (c) { centralSize += c.length; });
+      var eocd = new Uint8Array(22);
+      var ev = new DataView(eocd.buffer);
+      ev.setUint32(0, 0x06054b50, true);
+      ev.setUint16(8, entries.length, true);
+      ev.setUint16(10, entries.length, true);
+      ev.setUint32(12, centralSize, true);
+      ev.setUint32(16, offset, true);
+
+      return new Blob(parts.concat(central, [eocd]), { type: "application/zip" });
+    }
+
+    function fmtBytes(n) {
+      if (n < 1024) { return n + " B"; }
+      if (n < 1048576) { return (n / 1024).toFixed(1) + " KB"; }
+      return (n / 1048576).toFixed(2) + " MB";
+    }
+
+    /* ------------------------------------------------------------ */
+    var lista = document.getElementById("dl-list");
+    var statusEl = document.getElementById("dl-status");
+    var totalEl = document.getElementById("dl-total-size");
+    var labelEl = document.getElementById("dl-total-label");
+    var btn = document.getElementById("btn-baixar");
+
+    var nomes = ARQUIVOS_PROJETO.concat(["LEIA-ME.txt"]);
+    if (labelEl) { labelEl.textContent = nomes.length + " arquivos no pacote"; }
+
+    nomes.forEach(function (nome) {
+      var linha = document.createElement("div");
+      linha.className = "dl-file";
+      linha.setAttribute("data-nome", nome);
+      linha.innerHTML =
+        '<span class="dl-file-dot"></span>' +
+        '<span class="dl-file-name">' + nome + '</span>' +
+        '<span class="dl-file-size">aguardando</span>';
+      lista.appendChild(linha);
+    });
+
+    function marcar(nome, estado, texto) {
+      var linha = lista.querySelector('[data-nome="' + nome + '"]');
+      if (!linha) { return; }
+      linha.classList.remove("buscando", "ok", "erro");
+      if (estado) { linha.classList.add(estado); }
+      var tam = linha.querySelector(".dl-file-size");
+      if (tam) {
+        tam.textContent = texto;
+        tam.classList.remove("dl-file-ok", "dl-file-erro");
+        if (estado === "ok") { tam.classList.add("dl-file-ok"); }
+        if (estado === "erro") { tam.classList.add("dl-file-erro"); }
+      }
+    }
+
+    function setStatus(mensagem, tipo) {
+      if (!statusEl) { return; }
+      statusEl.textContent = mensagem;
+      statusEl.classList.remove("ok", "erro");
+      if (tipo) { statusEl.classList.add(tipo); }
+    }
+
+    function setCarregando(ativo) {
+      if (!btn) { return; }
+      btn.classList.toggle("loading", ativo);
+      btn.disabled = ativo;
+    }
+
+    btn.addEventListener("click", function () {
+      setCarregando(true);
+      setStatus("Coletando arquivos do projeto...");
+
+      var entradas = [];
+      var totalBytes = 0;
+      var falhas = [];
+
+      ARQUIVOS_PROJETO.forEach(function (nome) { marcar(nome, "buscando", "lendo..."); });
+
+      var leituras = ARQUIVOS_PROJETO.map(function (nome) {
+        return window.fetch(nome)
+          .then(function (resp) {
+            if (!resp.ok) { throw new Error("HTTP " + resp.status); }
+            return resp.arrayBuffer();
+          })
+          .then(function (buf) {
+            var dados = new Uint8Array(buf);
+            entradas.push({ name: nome, data: dados });
+            totalBytes += dados.length;
+            marcar(nome, "ok", fmtBytes(dados.length));
+          })
+          .catch(function () {
+            falhas.push(nome);
+            marcar(nome, "erro", "falhou");
+          });
+      });
+
+      Promise.all(leituras)
+        .then(function () {
+          if (falhas.length) {
+            setCarregando(false);
+            setStatus(
+              "Não foi possível ler: " + falhas.join(", ") +
+              ". Sirva esta página por HTTP (servidor estático) e tente novamente.",
+              "erro"
+            );
+            return;
+          }
+          var readme = new TextEncoder().encode(LEIA_ME);
+          entradas.push({ name: "LEIA-ME.txt", data: readme });
+          totalBytes += readme.length;
+          marcar("LEIA-ME.txt", "ok", fmtBytes(readme.length));
+
+          entradas.sort(function (a, b) {
+            return ARQUIVOS_PROJETO.indexOf(a.name) - ARQUIVOS_PROJETO.indexOf(b.name);
+          });
+
+          setStatus("Compactando pacote...");
+          var blob = buildZip(entradas);
+          if (totalEl) { totalEl.textContent = fmtBytes(blob.size); }
+
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = "fala-producao.zip";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          window.setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+
+          setCarregando(false);
+          setStatus("Download iniciado: fala-producao.zip (" + fmtBytes(blob.size) + ").", "ok");
+        })
+        .catch(function (erro) {
+          setCarregando(false);
+          setStatus(
+            "Não foi possível ler os arquivos (" + (erro && erro.message ? erro.message : "erro") +
+            "). Sirva esta página por HTTP e tente novamente.",
+            "erro"
+          );
+        });
+    });
+
+    /* menu mobile (mesmo comportamento das outras páginas) */
+    var toggle = document.getElementById("menu-toggle");
+    var header = document.querySelector(".site-header");
+    if (toggle && header) {
+      toggle.addEventListener("click", function () {
+        var aberto = header.classList.toggle("nav-open");
+        toggle.setAttribute("aria-expanded", aberto ? "true" : "false");
+      });
+      var links = document.querySelectorAll("#nav-mobile a");
+      for (var i = 0; i < links.length; i++) {
+        links[i].addEventListener("click", function () { header.classList.remove("nav-open"); });
+      }
+    }
+  </script>
+</body>
+</html>

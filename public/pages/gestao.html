@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central de Gestão — Fala Produção</title>
+  <link rel="icon" href="image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23F26419'/%3E%3Cpath d='M14 22a8 8 0 0 1 8-8h20a8 8 0 0 1 8 8v14a8 8 0 0 1-8 8H30l-9 9v-9h-1a8 8 0 0 1-8-8z' fill='%23FFF4EA'/%3E%3Ccircle cx='32' cy='29' r='6' fill='%23F26419'/%3E%3Ccircle cx='32' cy='29' r='2.2' fill='%23FFF4EA'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script>
+    /* Proteção de rota: sem sessão, volta para o login */
+    try {
+      if (!window.sessionStorage.getItem("fp-user")) {
+        window.location.replace("login.html");
+      }
+    } catch (e) { /* sessionStorage indisponível */ }
+  </script>
+</head>
+<body data-page="gestao">
+
+  <div class="g-shell" id="g-shell">
+
+    <!-- ======================= SIDEBAR ======================= -->
+    <aside class="g-sidebar" id="g-sidebar">
+      <a class="brand brand-light g-brand" href="gestao.html">
+        <img src="../assets/logo.svg" alt="Logo Fala Produção" class="brand-logo">
+        <span class="brand-text">
+          <span class="brand-name">Fala Produção</span>
+          <span class="brand-sub">Central de Gestão</span>
+        </span>
+      </a>
+
+      <nav class="g-nav" aria-label="Menu da gestão">
+        <button type="button" class="g-nav-item active" data-view="dashboard">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          Dashboard
+        </button>
+        <button type="button" class="g-nav-item" data-view="manifestacoes">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+          Manifestações
+          <span class="g-nav-count" id="nav-count-total">0</span>
+        </button>
+        <button type="button" class="g-nav-item" data-view="tratamento">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a5 5 0 0 0-6.9 6.2L3 17.3V21h3.7l4.8-4.8a5 5 0 0 0 6.2-6.9l-3.2 3.2-2.7-2.7z"/></svg>
+          Em tratamento
+          <span class="g-nav-count g-nav-count-hot" id="nav-count-tratamento">0</span>
+        </button>
+        <button type="button" class="g-nav-item" data-view="resolvidas">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 7"/></svg>
+          Resolvidas
+          <span class="g-nav-count g-nav-count-ok" id="nav-count-resolvidas">0</span>
+        </button>
+        <button type="button" class="g-nav-item" data-view="relatorios">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M8 17V9M13 17V5M18 17v-7"/></svg>
+          Relatórios
+        </button>
+        <button type="button" class="g-nav-item" data-view="usuarios">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM21 21v-2a4 4 0 0 0-3-3.9"/></svg>
+          Usuários
+        </button>
+        <button type="button" class="g-nav-item" data-view="config">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5h.1a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>
+          Configurações
+        </button>
+      </nav>
+
+      <div class="g-sidebar-foot">
+        <div class="g-user">
+          <span class="g-user-avatar" id="g-user-avatar">A</span>
+          <span class="g-user-info">
+            <span class="g-user-nome" id="g-user-nome">Administrador</span>
+            <span class="g-user-perfil" id="g-user-perfil">admin</span>
+          </span>
+        </div>
+        <button type="button" class="g-logout" id="g-sair">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5.5A1.5 1.5 0 0 1 4 19.5v-15A1.5 1.5 0 0 1 5.5 3H9M16 17l5-5-5-5M21 12H9"/></svg>
+          Sair
+        </button>
+      </div>
+    </aside>
+    <div class="g-overlay" id="g-overlay"></div>
+
+    <!-- ======================= CONTEÚDO ======================= -->
+    <div class="g-main">
+      <header class="g-topbar">
+        <button type="button" class="g-burger" id="g-burger" aria-label="Abrir menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="g-topbar-title">
+          <span id="g-view-title">Dashboard</span>
+          <span class="g-clock" id="g-clock"></span>
+        </div>
+        <a class="g-public-link" href="../index.html">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+          Ver área pública
+        </a>
+      </header>
+
+      <div class="g-content">
+
+        <!-- ============ DASHBOARD ============ -->
+        <section class="g-view active" id="view-dashboard">
+          <div class="g-page-head">
+            <h1>Central de Gestão</h1>
+            <p>Acompanhe, analise e gerencie as manifestações recebidas.</p>
+          </div>
+
+          <div class="g-stats">
+            <div class="g-stat g-stat-total">
+              <span class="g-stat-label">Total de manifestações</span>
+              <span class="g-stat-num" id="stat-total">0</span>
+            </div>
+            <div class="g-stat">
+              <span class="g-stat-label"><span class="g-dot dot-analise"></span>Em análise</span>
+              <span class="g-stat-num" id="stat-analise">0</span>
+            </div>
+            <div class="g-stat">
+              <span class="g-stat-label"><span class="g-dot dot-tratamento"></span>Em tratamento</span>
+              <span class="g-stat-num" id="stat-tratamento">0</span>
+            </div>
+            <div class="g-stat">
+              <span class="g-stat-label"><span class="g-dot dot-resolvido"></span>Resolvidas</span>
+              <span class="g-stat-num" id="stat-resolvidas">0</span>
+            </div>
+          </div>
+
+          <div class="g-dash-grid">
+            <div class="g-panel">
+              <div class="g-panel-head">
+                <h3>Manifestações por status</h3>
+                <span class="g-panel-tag">ao vivo</span>
+              </div>
+              <div class="g-bars" id="chart-status"></div>
+            </div>
+            <div class="g-panel">
+              <div class="g-panel-head">
+                <h3>Manifestações por categoria</h3>
+                <span class="g-panel-tag">ao vivo</span>
+              </div>
+              <div class="g-bars" id="chart-categoria"></div>
+            </div>
+          </div>
+
+          <div class="g-panel">
+            <div class="g-panel-head">
+              <h3>Protocolos recentes</h3>
+              <button type="button" class="g-link-btn" id="btn-ver-todas">Ver todas →</button>
+            </div>
+            <div class="g-recentes-list" id="recentes-list"></div>
+          </div>
+        </section>
+
+        <!-- ============ MANIFESTAÇÕES ============ -->
+        <section class="g-view" id="view-manifestacoes">
+          <div class="g-page-head">
+            <h1>Manifestações</h1>
+            <p>Todos os protocolos enviados pelos colaboradores, com busca e filtros.</p>
+          </div>
+
+          <div class="g-toolbar">
+            <div class="g-search">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+              <input type="text" class="input" id="f-busca" placeholder="Buscar por protocolo, categoria, setor ou responsável...">
+            </div>
+            <div class="g-filters">
+              <label class="g-filter">Status
+                <select class="input" id="f-status">
+                  <option value="todos">Todos</option>
+                  <option value="recebido">Recebido</option>
+                  <option value="analise">Em análise</option>
+                  <option value="tratamento">Em tratamento</option>
+                  <option value="resolvido">Resolvido</option>
+                  <option value="encerrado">Encerrado</option>
+                </select>
+              </label>
+              <label class="g-filter">Categoria
+                <select class="input" id="f-categoria">
+                  <option value="todos">Todas</option>
+                  <option value="problema">Problema</option>
+                  <option value="sugestao">Sugestão</option>
+                  <option value="risco">Risco de segurança</option>
+                  <option value="reconhecimento">Reconhecimento</option>
+                </select>
+              </label>
+              <label class="g-filter">Setor
+                <select class="input" id="f-setor">
+                  <option value="todos">Todos</option>
+                  <option value="feed">FEED</option>
+                  <option value="food">FOOD</option>
+                  <option value="logistica">LOGISTICA</option>
+                  <option value="outros">Outros</option>
+                  <option value="nao-informar">Prefiro não informar</option>
+                </select>
+              </label>
+              <label class="g-filter">De
+                <input type="date" class="input" id="f-de">
+              </label>
+              <label class="g-filter">Até
+                <input type="date" class="input" id="f-ate">
+              </label>
+              <button type="button" class="btn btn-ghost g-btn-sm" id="btn-limpar">Limpar filtros</button>
+            </div>
+          </div>
+
+          <div class="g-table-wrap">
+            <div class="g-table-scroll">
+              <table class="g-table">
+                <thead>
+                  <tr>
+                    <th>Protocolo</th>
+                    <th>Data</th>
+                    <th>Categoria</th>
+                    <th>Setor</th>
+                    <th>Status</th>
+                    <th>Prioridade</th>
+                    <th>Responsável</th>
+                    <th>Atualização</th>
+                    <th class="g-th-acoes">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-manifestacoes"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="g-table-foot">
+            <span class="g-muted" id="tabela-contagem"></span>
+            <button type="button" class="btn btn-secondary g-btn-sm" id="btn-exportar">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+              Exportar CSV
+            </button>
+          </div>
+        </section>
+
+        <!-- ============ EM TRATAMENTO / RESOLVIDAS ============ -->
+        <section class="g-view" id="view-tratamento">
+          <div class="g-page-head">
+            <h1>Em tratamento</h1>
+            <p>Manifestações com plano de ação em andamento.</p>
+          </div>
+          <div class="g-table-wrap">
+            <div class="g-table-scroll">
+              <table class="g-table">
+                <thead>
+                  <tr>
+                    <th>Protocolo</th><th>Data</th><th>Categoria</th><th>Setor</th>
+                    <th>Status</th><th>Prioridade</th><th>Responsável</th><th>Atualização</th><th class="g-th-acoes">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-tratamento"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="g-view" id="view-resolvidas">
+          <div class="g-page-head">
+            <h1>Resolvidas</h1>
+            <p>Manifestações concluídas com retorno ao colaborador.</p>
+          </div>
+          <div class="g-table-wrap">
+            <div class="g-table-scroll">
+              <table class="g-table">
+                <thead>
+                  <tr>
+                    <th>Protocolo</th><th>Data</th><th>Categoria</th><th>Setor</th>
+                    <th>Status</th><th>Prioridade</th><th>Responsável</th><th>Atualização</th><th class="g-th-acoes">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-resolvidas"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ RELATÓRIOS ============ -->
+        <section class="g-view" id="view-relatorios">
+          <div class="g-page-head">
+            <h1>Relatórios</h1>
+            <p>Visões consolidadas do canal — os gráficos do dashboard em detalhe.</p>
+          </div>
+          <div class="g-dash-grid">
+            <div class="g-panel">
+              <div class="g-panel-head"><h3>Distribuição por status</h3></div>
+              <div class="g-bars" id="rel-status"></div>
+            </div>
+            <div class="g-panel">
+              <div class="g-panel-head"><h3>Distribuição por setor</h3></div>
+              <div class="g-bars" id="rel-setor"></div>
+            </div>
+          </div>
+          <div class="g-panel g-export">
+            <div>
+              <h3 style="font-family:var(--font-display);font-size:16px;margin-bottom:6px">Exportação de dados</h3>
+              <p class="g-muted">Baixe a base completa filtrada em CSV para análises externas (Excel, Power BI, etc.).</p>
+            </div>
+            <button type="button" class="btn btn-primary g-btn-sm" id="btn-exportar-rel">Baixar CSV completo</button>
+          </div>
+        </section>
+
+        <!-- ============ USUÁRIOS ============ -->
+        <section class="g-view" id="view-usuarios">
+          <div class="g-page-head">
+            <h1>Usuários</h1>
+            <p>Cadastre os e-mails de quem pode acessar e visualizar o canal de escuta.</p>
+          </div>
+
+          <div class="g-panel g-user-form-panel">
+            <div class="g-panel-head"><h3 id="usuarios-form-titulo">Adicionar usuário</h3></div>
+            <form id="form-usuario" novalidate>
+              <div class="g-user-form-grid">
+                <div class="field">
+                  <label for="u-nome">Nome</label>
+                  <input type="text" class="input" id="u-nome" placeholder="Nome completo">
+                  <span class="field-error" role="alert"></span>
+                </div>
+                <div class="field">
+                  <label for="u-email">E-mail</label>
+                  <input type="email" class="input" id="u-email" placeholder="nome@empresa.com">
+                  <span class="field-error" role="alert"></span>
+                </div>
+                <div class="field">
+                  <label for="u-perfil">Perfil</label>
+                  <select class="input" id="u-perfil">
+                    <option value="Gestão">Gestão</option>
+                    <option value="Admin">Admin</option>
+                    <option value="RH">RH</option>
+                    <option value="Segurança">Segurança</option>
+                    <option value="Visualização">Visualização</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field" style="margin-top:14px">
+                <label>Permissões</label>
+                <div class="perm-group">
+                  <label class="perm-chip"><input type="checkbox" id="u-perm-acessar" checked><span>Acessar a gestão</span></label>
+                  <label class="perm-chip"><input type="checkbox" id="u-perm-ver" checked><span>Ver manifestações</span></label>
+                </div>
+                <span class="field-error" role="alert" id="u-perm-erro"></span>
+              </div>
+              <div class="g-form-actions">
+                <button type="submit" class="btn btn-primary g-btn-sm" id="u-submit">
+                  <span class="spinner" aria-hidden="true"></span>
+                  <span class="btn-label">Cadastrar usuário</span>
+                </button>
+                <button type="button" class="btn btn-ghost g-btn-sm" id="u-cancelar" hidden>Cancelar edição</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="g-table-wrap">
+            <div class="g-table-scroll">
+              <table class="g-table g-table-users">
+                <thead>
+                  <tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Permissões</th><th class="g-th-acoes">Ações</th></tr>
+                </thead>
+                <tbody id="tabela-usuarios"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="g-table-foot">
+            <span class="g-muted" id="usuarios-contagem"></span>
+            <span class="g-muted">Em produção: Supabase Auth + tabela profiles com RLS.</span>
+          </div>
+        </section>
+
+        <!-- ============ CONFIGURAÇÕES ============ -->
+        <section class="g-view" id="view-config">
+          <div class="g-page-head">
+            <h1>Configurações</h1>
+            <p>Ajustes da conta e da Central de Gestão.</p>
+          </div>
+
+          <div class="g-panel" style="max-width:560px;margin-bottom:18px">
+            <div class="g-panel-head"><h3>Alterar senha</h3></div>
+            <form id="form-senha" novalidate>
+              <div class="field" style="margin-bottom:14px">
+                <label for="senha-atual">Senha atual</label>
+                <input type="password" class="input" id="senha-atual" autocomplete="current-password">
+                <span class="field-error" role="alert"></span>
+              </div>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="senha-nova">Nova senha</label>
+                  <input type="password" class="input" id="senha-nova" autocomplete="new-password">
+                  <span class="field-error" role="alert"></span>
+                </div>
+                <div class="field">
+                  <label for="senha-confirma">Confirmar nova senha</label>
+                  <input type="password" class="input" id="senha-confirma" autocomplete="new-password">
+                  <span class="field-error" role="alert"></span>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary g-btn-sm" id="btn-salvar-senha" style="margin-top:16px">
+                <span class="spinner" aria-hidden="true"></span>
+                <span class="btn-label">Salvar nova senha</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="g-panel g-note-panel" style="max-width:560px">
+            <div class="g-panel-head"><h3>Sobre a demonstração</h3></div>
+            <p class="g-doc-text">
+              Este é um protótipo front-end: os dados são simulados neste navegador
+              (localStorage) e a sessão usa sessionStorage. As alterações feitas na gestão
+              refletem no acompanhamento público do próprio navegador.
+            </p>
+            <p class="g-doc-text" style="margin-top:10px">
+              Em produção, conecte ao <strong>Supabase Auth</strong> e ative RLS nas tabelas
+              de manifestações — os pontos de integração estão marcados no código com o
+              comentário <code>INTEGRAÇÃO</code>.
+            </p>
+          </div>
+        </section>
+
+      </div><!-- /g-content -->
+    </div><!-- /g-main -->
+  </div><!-- /g-shell -->
+
+  <!-- ======================= MODAL DE DETALHES ======================= -->
+  <div class="gmodal-backdrop" id="modal-detalhe" hidden>
+    <div class="gmodal" role="dialog" aria-modal="true" aria-labelledby="gm-protocolo">
+      <div class="gmodal-body">
+        <div class="gm-head">
+          <div>
+            <h3 id="gm-protocolo">FALA #000001</h3>
+            <p class="gm-sub" id="gm-sub">aberto em —</p>
+          </div>
+          <button type="button" class="g-btn-x" id="gm-fechar" aria-label="Fechar detalhes">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+
+        <div class="gm-badges" id="gm-badges"></div>
+
+        <div class="gm-meta">
+          <div><small>Data</small><strong id="gm-data">—</strong></div>
+          <div><small>Categoria</small><strong id="gm-categoria">—</strong></div>
+          <div><small>Setor</small><strong id="gm-setor">—</strong></div>
+        </div>
+
+        <div class="gm-block">
+          <h4>Descrição do colaborador</h4>
+          <p id="gm-descricao">—</p>
+        </div>
+
+        <div class="gm-block">
+          <h4>Identificação</h4>
+          <div id="gm-identificacao"></div>
+        </div>
+
+        <div class="gm-block">
+          <h4>Gestão do protocolo</h4>
+          <div class="gm-campos">
+            <label>Status
+              <select class="input" id="gm-status">
+                <option value="recebido">Recebido</option>
+                <option value="analise">Em análise</option>
+                <option value="tratamento">Em tratamento</option>
+                <option value="resolvido">Resolvido</option>
+                <option value="encerrado">Encerrado</option>
+              </select>
+            </label>
+            <label>Prioridade
+              <select class="input" id="gm-prioridade">
+                <option value="baixa">Baixa</option>
+                <option value="media">Média</option>
+                <option value="alta">Alta</option>
+                <option value="critica">Crítica</option>
+              </select>
+            </label>
+            <label>Responsável
+              <select class="input" id="gm-responsavel">
+                <option value="">— sem responsável —</option>
+                <option value="Marcos">Marcos</option>
+                <option value="Marina">Marina</option>
+                <option value="Paulo">Paulo</option>
+                <option value="Renata">Renata</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="g-filter" style="margin-bottom:6px">Observação interna
+            <textarea class="input gm-textarea" id="gm-obs" placeholder="Anotação visível apenas para a gestão..."></textarea>
+          </label>
+          <button type="button" class="btn btn-secondary g-btn-sm" id="gm-add-obs">Adicionar observação</button>
+          <div class="gm-obs-list" id="gm-obs-list"></div>
+
+          <label class="g-filter" style="margin:14px 0 6px">Resposta / retorno ao colaborador
+            <textarea class="input gm-textarea" id="gm-retorno" placeholder="Mensagem que o colaborador verá no acompanhamento..."></textarea>
+          </label>
+          <div id="gm-retorno-enviado"></div>
+          <button type="button" class="btn btn-primary g-btn-sm" id="gm-salvar">Salvar alterações</button>
+        </div>
+
+        <div class="gm-block">
+          <h4>Histórico</h4>
+          <div class="gm-hist" id="gm-hist"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../script.js"></script>
+  <script src="../gestao.js"></script>
+</body>
+</html>
